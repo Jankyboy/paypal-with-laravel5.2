@@ -43,30 +43,30 @@ class PaypalController extends Controller
     $payer->setPaymentMethod('paypal');
  
     $item_1 = new Item();
-    $item_1->setName('Booking pet') // item name
+    $item_1->setName('Item 1') // item name
         ->setCurrency('AUD')
         ->setQuantity(1)
         ->setPrice('150'); // unit price
  
-    // $item_2 = new Item();
-    // $item_2->setName('Item 2')
-    //     ->setCurrency('USD')
-    //     ->setQuantity(4)
-    //     ->setPrice('70');
+    $item_2 = new Item();
+    $item_2->setName('Item 2')
+        ->setCurrency('AUD')
+        ->setQuantity(2)
+        ->setPrice('10');
  
  
     // add item to list
     $item_list = new ItemList();
-    $item_list->setItems(array($item_1));
+    $item_list->setItems(array($item_1,$item_2));
  
     $amount = new Amount();
     $amount->setCurrency('AUD')
-        ->setTotal(150);
+        ->setTotal(170);
  
     $transaction = new Transaction();
     $transaction->setAmount($amount)
         ->setItemList($item_list)
-        ->setDescription('Pet booking description');
+        ->setDescription('description');
  
     $redirect_urls = new RedirectUrls();
     $redirect_urls->setReturnUrl(route('payment.status')) // Specify return URL
@@ -107,7 +107,7 @@ class PaypalController extends Controller
        
     }
  
-    return redirect()->route('original.route')
+    return redirect()->route('home')
         ->with('error', 'Unknown error occurred');
 	}
 
@@ -120,7 +120,7 @@ class PaypalController extends Controller
     $payment_id = Session::get('paypal_payment_id');
  
     // clear the session payment ID
-    //Session::forget('paypal_payment_id');
+    Session::forget('paypal_payment_id');
 
     if(empty($request->input('PayerID')) || empty($request->input('token'))){
     	return redirect()->route('home')->with('info', 'Payment failed');
